@@ -4,6 +4,7 @@ import { AuthContext } from '../context/AuthContext';
 import { Compass, Calendar, LogOut, Menu, X, User, MapPin, Globe, Sun, Moon } from 'lucide-react';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import { useTranslation } from 'react-i18next';
+import LogoIcon from '../components/LogoIcon';
 
 const MainLayout = ({ children }) => {
   const { user, logout } = useContext(AuthContext);
@@ -50,7 +51,7 @@ const MainLayout = ({ children }) => {
             <div className="flex items-center">
               <Link to="/dashboard" className="flex items-center space-x-2.5 group">
                 <div className="p-2.5 rounded-xl bg-gradient-to-tr from-ocean-500 to-emerald-500 shadow-lg shadow-ocean-950/20 group-hover:scale-105 transition-all duration-300">
-                  <Compass className="w-6 h-6 text-white animate-pulse-slow" />
+                  <LogoIcon className="w-6 h-6 text-white animate-pulse-slow" />
                 </div>
                 <span className="text-2xl font-black bg-gradient-to-r from-ocean-600 via-emerald-600 to-gold-600 dark:from-ocean-400 dark:via-emerald-400 dark:to-gold-400 bg-clip-text text-transparent tracking-tight">
                   TripNest
@@ -287,7 +288,7 @@ const MainLayout = ({ children }) => {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center space-x-2.5">
-            <Compass className="w-5 h-5 text-ocean-450" />
+            <LogoIcon className="w-5 h-5 text-ocean-450" />
             <span className="font-bold tracking-wide" style={{ color: 'rgb(var(--text-primary))' }}>TripNest</span>
           </div>
           <p>© 2026 TripNest. {t('footer.tagline')}</p>

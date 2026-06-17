@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+import LogoIcon from '../components/LogoIcon';
 import { 
   Compass, 
   Upload, 
@@ -45,7 +46,7 @@ const LandingPage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           <div className="flex items-center space-x-2 sm:space-x-2.5">
             <div className="p-2 sm:p-2.5 rounded-xl bg-gradient-to-tr from-ocean-500 to-emerald-500 shadow-md shadow-ocean-950/20">
-              <Compass className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+              <LogoIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
             </div>
             <span className="text-lg sm:text-xl font-bold bg-gradient-to-r from-ocean-600 via-emerald-600 to-gold-600 dark:from-ocean-400 dark:via-emerald-400 dark:to-gold-400 bg-clip-text text-transparent">
               TripNest
@@ -308,7 +309,7 @@ const LandingPage = () => {
       <footer className="py-12 text-sm mt-auto" style={{ borderTop: '1px solid rgb(var(--border-color))', backgroundColor: 'rgb(var(--bg-primary))', color: 'rgb(var(--text-muted))' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-6">
           <div className="flex items-center space-x-2">
-            <Compass className="w-5 h-5 text-ocean-450" />
+            <LogoIcon className="w-5 h-5 text-ocean-450" />
             <span className="font-semibold" style={{ color: 'rgb(var(--text-primary))' }}>TripNest</span>
           </div>
           <p>© 2026 TripNest. {t('footer.rights')}</p>

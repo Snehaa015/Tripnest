@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { getPublicItinerary } from '../services/itineraryService';
 import { exportItineraryToPDF, exportPageToPDF } from '../utils/pdfExport';
 import { useTranslation } from 'react-i18next';
+import LogoIcon from '../components/LogoIcon';
 import { 
   Calendar, 
   MapPin, 
@@ -135,7 +136,7 @@ const SharePage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
           <Link to="/" className="flex items-center space-x-2.5">
             <div className="p-2 rounded-xl bg-gradient-to-tr from-ocean-500 to-emerald-500">
-              <Compass className="w-5.5 h-5.5 text-white" />
+              <LogoIcon className="w-5.5 h-5.5 text-white" />
             </div>
             <span className="text-lg font-bold bg-gradient-to-r from-ocean-400 to-teal-200 bg-clip-text text-transparent">
               TripNest

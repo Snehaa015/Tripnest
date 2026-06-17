@@ -2,8 +2,9 @@ import React, { useContext, useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { AuthContext } from '../context/AuthContext';
-import { Compass, AlertCircle, Eye, EyeOff } from 'lucide-react';
+import { AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import LogoIcon from '../components/LogoIcon';
 
 const LoginPage = () => {
   const { login } = useContext(AuthContext);
@@ -44,7 +45,7 @@ const LoginPage = () => {
       <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10">
         <Link to="/" className="flex items-center justify-center space-x-2 mb-6 group">
           <div className="p-2 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-600 group-hover:scale-105 transition-transform">
-            <Compass className="w-7 h-7 text-white" />
+            <LogoIcon className="w-7 h-7 text-white" />
           </div>
           <span className="text-2xl font-bold bg-gradient-to-r from-emerald-400 to-teal-200 bg-clip-text text-transparent">
             TripNest
