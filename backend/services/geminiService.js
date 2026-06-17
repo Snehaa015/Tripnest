@@ -1,6 +1,7 @@
 const { GoogleGenerativeAI } = require('@google/generative-ai');
+const Groq = require('groq-sdk');
 
-// Helper to sanitize JSON response from Gemini (stripping markdown fences)
+// Helper to sanitize JSON response from AI (stripping markdown fences)
 const sanitizeJsonString = (text) => {
   let cleaned = text.trim();
   
@@ -18,12 +19,19 @@ const sanitizeJsonString = (text) => {
   return cleaned.trim();
 };
 
-// Models to try in order (fallback chain)
-const MODEL_FALLBACK_LIST = [
+// Gemini models to try in order (fallback chain)
+const GEMINI_MODEL_FALLBACK_LIST = [
   'gemini-2.0-flash',
   'gemini-2.0-flash-exp',
   'gemini-1.5-flash-latest',
   'gemini-1.5-pro-latest',
+];
+
+// Groq models to try if all Gemini models fail
+const GROQ_MODEL_FALLBACK_LIST = [
+  'llama-3.3-70b-versatile',
+  'llama-3.1-8b-instant',
+  'mixtral-8x7b-32768',
 ];
 
 // Sleep helper
@@ -38,50 +46,93 @@ const getGenAIInstance = () => {
 };
 
 /**
- * Tries to generate content using a list of models with retry & fallback.
- * On 429 quota errors, tries next model. On 503, retries with delay.
+ * Try Groq as a fallback when all Gemini models are quota exhausted.
+ * Groq is free with 14,400 requests/day, no credit card needed.
  */
-const generateWithFallback = async (promptFn) => {
-  const genAI = getGenAIInstance();
-  
-  for (const modelName of MODEL_FALLBACK_LIST) {
-    const model = genAI.getGenerativeModel({ model: modelName });
-    let retries = 2;
-    
-    while (retries >= 0) {
-      try {
-        const prompt = promptFn();
-        const result = await model.generateContent(prompt);
-        const response = await result.response;
-        return response.text();
-      } catch (err) {
-        const status = err?.status || err?.httpErrorCode;
-        const msg = err?.message || '';
-        
-        if (msg.includes('503') || msg.includes('Service Unavailable')) {
-          // Temporary overload — retry with delay
-          if (retries > 0) {
-            console.warn(`[Gemini] ${modelName} returned 503, retrying in 5s... (${retries} retries left)`);
-            await sleep(5000);
-            retries--;
-            continue;
-          }
-        }
-        
-        if (msg.includes('429') || msg.includes('quota') || msg.includes('RESOURCE_EXHAUSTED') ||
-            msg.includes('404') || msg.includes('not found') || msg.includes('not supported')) {
-          // Quota exhausted or model not available — try next model
-          console.warn(`[Gemini] ${modelName} unavailable (${msg.slice(0, 80)}), trying next model...`);
-          break;
-        }
-        
-        // Unknown error — rethrow
-        throw err;
+const generateWithGroq = async (promptFn) => {
+  const groqApiKey = process.env.GROQ_API_KEY;
+  if (!groqApiKey) {
+    throw new Error('GROQ_API_KEY not configured and all Gemini models are quota exhausted.');
+  }
+
+  const groq = new Groq({ apiKey: groqApiKey });
+
+  for (const modelName of GROQ_MODEL_FALLBACK_LIST) {
+    try {
+      console.log(`[Groq] Trying model: ${modelName}`);
+      const prompt = promptFn();
+      const completion = await groq.chat.completions.create({
+        messages: [{ role: 'user', content: prompt }],
+        model: modelName,
+        temperature: 0.7,
+        max_tokens: 8192,
+      });
+      return completion.choices[0]?.message?.content || '';
+    } catch (err) {
+      const msg = err?.message || '';
+      console.warn(`[Groq] ${modelName} failed: ${msg.slice(0, 100)}`);
+      if (msg.includes('429') || msg.includes('quota') || msg.includes('rate_limit_exceeded')) {
+        continue; // Try next Groq model
       }
+      throw err;
     }
   }
-  
-  throw new Error('All Gemini models are currently unavailable or quota exhausted. Please try again later.');
+
+  throw new Error('All AI models (Gemini + Groq) are currently unavailable. Please try again later.');
+};
+
+/**
+ * Tries to generate content using Gemini models with retry & fallback.
+ * If all Gemini models fail, falls back to Groq (free, no credit card).
+ */
+const generateWithFallback = async (promptFn) => {
+  // Try all Gemini models first
+  if (process.env.GEMINI_API_KEY) {
+    try {
+      const genAI = getGenAIInstance();
+      
+      for (const modelName of GEMINI_MODEL_FALLBACK_LIST) {
+        const model = genAI.getGenerativeModel({ model: modelName });
+        let retries = 2;
+        
+        while (retries >= 0) {
+          try {
+            const prompt = promptFn();
+            const result = await model.generateContent(prompt);
+            const response = await result.response;
+            return response.text();
+          } catch (err) {
+            const msg = err?.message || '';
+            
+            if (msg.includes('503') || msg.includes('Service Unavailable')) {
+              if (retries > 0) {
+                console.warn(`[Gemini] ${modelName} returned 503, retrying in 5s... (${retries} retries left)`);
+                await sleep(5000);
+                retries--;
+                continue;
+              }
+            }
+            
+            if (msg.includes('429') || msg.includes('quota') || msg.includes('RESOURCE_EXHAUSTED') ||
+                msg.includes('404') || msg.includes('not found') || msg.includes('not supported')) {
+              console.warn(`[Gemini] ${modelName} unavailable, trying next...`);
+              break;
+            }
+            
+            throw err;
+          }
+          retries--;
+        }
+      }
+    } catch (err) {
+      // If getGenAIInstance throws (no key), fall through to Groq
+      console.warn('[Gemini] Skipping Gemini:', err.message);
+    }
+  }
+
+  // All Gemini models failed — try Groq
+  console.log('[AI] All Gemini models exhausted, falling back to Groq...');
+  return generateWithGroq(promptFn);
 };
 
 /**
