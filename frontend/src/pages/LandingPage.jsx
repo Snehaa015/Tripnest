@@ -99,12 +99,6 @@ const LandingPage = () => {
               variants={staggerContainer}
               className="lg:col-span-8 space-y-6"
             >
-              {/* Tagline Badge */}
-              <motion.div variants={fadeInUp} className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full bg-sunset-500/10 border border-sunset-500/20 text-sunset-400 text-xs font-semibold uppercase tracking-wider">
-                <Sparkles className="w-3.5 h-3.5 text-gold-450 animate-pulse" />
-                <span>{t('landing.badge')}</span>
-              </motion.div>
-
               {/* Headline */}
               <motion.h1 variants={fadeInUp} className="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight leading-[1.05]" style={{ color: '#ffffff', textShadow: '0 2px 12px rgba(0,0,0,0.5)' }}>
                 {t('landing.headline1')} <br />
