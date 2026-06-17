@@ -32,7 +32,7 @@ const getGenAIInstance = () => {
 const parseExtractedData = async (rawText) => {
   try {
     const genAI = getGenAIInstance();
-    const model = genAI.getGenerativeModel({ model: 'gemini-flash-latest' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 
     const prompt = `
 You are an expert AI parser for travel booking documents.
@@ -136,8 +136,8 @@ ${rawText}
 const generateItinerary = async (travelData, duration) => {
   try {
     const genAI = getGenAIInstance();
-    // Use gemini-flash-latest for speed and reliability
-    const model = genAI.getGenerativeModel({ model: 'gemini-flash-latest' });
+    // Use gemini-2.0-flash for speed and reliability
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 
     const prompt = `
 You are a professional travel planner and tour operator.
@@ -273,7 +273,7 @@ const translateItinerary = async (itineraryObj, targetLangCode) => {
 
   try {
     const genAI = getGenAIInstance();
-    const model = genAI.getGenerativeModel({ model: 'gemini-flash-latest' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 
     const prompt = `
 You are a translation expert.
