@@ -18,6 +18,17 @@ const sanitizeJsonString = (text) => {
   return cleaned.trim();
 };
 
+// Models to try in order (fallback chain)
+const MODEL_FALLBACK_LIST = [
+  'gemini-1.5-flash',
+  'gemini-1.5-flash-latest',
+  'gemini-2.0-flash',
+  'gemini-1.5-pro',
+];
+
+// Sleep helper
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 const getGenAIInstance = () => {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey || apiKey === 'YOUR_GEMINI_API_KEY_HERE') {
@@ -27,14 +38,57 @@ const getGenAIInstance = () => {
 };
 
 /**
+ * Tries to generate content using a list of models with retry & fallback.
+ * On 429 quota errors, tries next model. On 503, retries with delay.
+ */
+const generateWithFallback = async (promptFn) => {
+  const genAI = getGenAIInstance();
+  
+  for (const modelName of MODEL_FALLBACK_LIST) {
+    const model = genAI.getGenerativeModel({ model: modelName });
+    let retries = 2;
+    
+    while (retries >= 0) {
+      try {
+        const prompt = promptFn();
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        return response.text();
+      } catch (err) {
+        const status = err?.status || err?.httpErrorCode;
+        const msg = err?.message || '';
+        
+        if (msg.includes('503') || msg.includes('Service Unavailable')) {
+          // Temporary overload — retry with delay
+          if (retries > 0) {
+            console.warn(`[Gemini] ${modelName} returned 503, retrying in 5s... (${retries} retries left)`);
+            await sleep(5000);
+            retries--;
+            continue;
+          }
+        }
+        
+        if (msg.includes('429') || msg.includes('quota') || msg.includes('RESOURCE_EXHAUSTED')) {
+          // Quota exhausted on this model — break to try next
+          console.warn(`[Gemini] ${modelName} quota exhausted, trying next model...`);
+          break;
+        }
+        
+        // Unknown error — rethrow
+        throw err;
+      }
+    }
+  }
+  
+  throw new Error('All Gemini models are currently unavailable or quota exhausted. Please try again later.');
+};
+
+/**
  * Extracts structured travel data from raw OCR text using Gemini
  */
 const parseExtractedData = async (rawText) => {
   try {
-    const genAI = getGenAIInstance();
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
-
-    const prompt = `
+    const buildPrompt = () => `
 You are an expert AI parser for travel booking documents.
 Your task is to extract specific travel fields from the raw text of an uploaded document (flight ticket, hotel booking confirmation, train ticket, bus ticket, itinerary confirmation, etc.).
 
@@ -79,9 +133,7 @@ ${rawText}
 -------------------------
 `;
 
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const textResponse = response.text();
+    const textResponse = await generateWithFallback(buildPrompt);
     
     const sanitizedJson = sanitizeJsonString(textResponse);
     
@@ -135,11 +187,7 @@ ${rawText}
  */
 const generateItinerary = async (travelData, duration) => {
   try {
-    const genAI = getGenAIInstance();
-    // Use gemini-2.0-flash for speed and reliability
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
-
-    const prompt = `
+    const buildPrompt = () => `
 You are a professional travel planner and tour operator.
 Create a comprehensive, premium day-by-day travel itinerary for a trip to: ${travelData.destination}.
 
@@ -226,10 +274,7 @@ JSON Schema:
 }
 `;
 
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const textResponse = response.text();
-    
+    const textResponse = await generateWithFallback(buildPrompt);
     const sanitizedJson = sanitizeJsonString(textResponse);
     
     try {
@@ -272,10 +317,7 @@ const translateItinerary = async (itineraryObj, targetLangCode) => {
   }
 
   try {
-    const genAI = getGenAIInstance();
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
-
-    const prompt = `
+    const buildPrompt = () => `
 You are a translation expert.
 Translate the following travel itinerary JSON object to ${targetLang}.
 
@@ -289,9 +331,7 @@ Itinerary JSON to translate:
 ${JSON.stringify(itineraryObj)}
 `;
 
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const textResponse = response.text();
+    const textResponse = await generateWithFallback(buildPrompt);
     const sanitizedJson = sanitizeJsonString(textResponse);
     return JSON.parse(sanitizedJson);
   } catch (err) {
