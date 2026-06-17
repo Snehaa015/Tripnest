@@ -1,0 +1,381 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =========================================
+   THEME VARIABLES
+   :root = Light Mode defaults
+   .dark = Dark Mode overrides
+   ========================================= */
+
+:root {
+  /* Light Mode: bg is light, text is dark */
+  --slate-50: 15, 23, 42;
+  --slate-100: 15, 23, 42;
+  --slate-200: 30, 41, 59;
+  --slate-300: 51, 65, 85;
+  --slate-400: 71, 85, 105;
+  --slate-500: 100, 116, 139;
+  --slate-600: 148, 163, 184;
+  --slate-700: 203, 213, 225;
+  --slate-800: 226, 232, 240;
+  --slate-900: 241, 245, 249;
+  --slate-950: 248, 250, 252;
+
+  /* Light Mode Semantic Tokens */
+  --bg-primary: 248, 250, 252;
+  --bg-surface: 255, 255, 255;
+  --bg-muted: 241, 245, 249;
+  --text-primary: 15, 23, 42;
+  --text-secondary: 51, 65, 85;
+  --text-muted: 100, 116, 139;
+  --border-color: 226, 232, 240;
+  --glass-bg: rgba(255, 255, 255, 0.82);
+  --glass-border: rgba(0, 0, 0, 0.08);
+  --glass-card-bg: rgba(255, 255, 255, 0.9);
+  --glass-card-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.06);
+  --scrollbar-track: rgba(241, 245, 249, 0.9);
+  --scrollbar-thumb: rgba(2, 132, 199, 0.25);
+}
+
+.dark {
+  /* Dark Mode: bg is dark, text is light */
+  --slate-50: 248, 250, 252;
+  --slate-100: 241, 245, 249;
+  --slate-200: 226, 232, 240;
+  --slate-300: 203, 213, 225;
+  --slate-400: 148, 163, 184;
+  --slate-500: 100, 116, 139;
+  --slate-600: 71, 85, 105;
+  --slate-700: 51, 65, 85;
+  --slate-800: 30, 41, 59;
+  --slate-900: 15, 23, 42;
+  --slate-950: 2, 8, 23;
+
+  /* Dark Mode Semantic Tokens */
+  --bg-primary: 2, 8, 23;
+  --bg-surface: 15, 23, 42;
+  --bg-muted: 15, 23, 42;
+  --text-primary: 248, 250, 252;
+  --text-secondary: 203, 213, 225;
+  --text-muted: 100, 116, 139;
+  --border-color: 30, 41, 59;
+  --glass-bg: rgba(15, 23, 42, 0.45);
+  --glass-border: rgba(255, 255, 255, 0.06);
+  --glass-card-bg: rgba(15, 23, 42, 0.65);
+  --glass-card-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.45);
+  --scrollbar-track: rgba(3, 7, 18, 0.8);
+  --scrollbar-thumb: rgba(2, 132, 199, 0.35);
+}
+
+/* =========================================
+   BASE STYLES
+   ========================================= */
+
+@layer base {
+  html {
+    color-scheme: light dark;
+  }
+
+  body {
+    @apply font-sans antialiased overflow-x-hidden;
+    background-color: rgb(var(--bg-primary));
+    color: rgb(var(--text-primary));
+    transition: background-color 0.3s ease, color 0.3s ease;
+    background-image:
+      radial-gradient(at 0% 0%, rgba(2, 132, 199, 0.05) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, rgba(16, 185, 129, 0.04) 0px, transparent 50%);
+    background-attachment: fixed;
+  }
+
+  .dark body {
+    background-image:
+      radial-gradient(at 0% 0%, rgba(2, 132, 199, 0.12) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, rgba(16, 185, 129, 0.09) 0px, transparent 50%),
+      radial-gradient(at 50% 100%, rgba(249, 115, 22, 0.05) 0px, transparent 50%);
+  }
+
+  /* Adaptive headings and text */
+  h1, h2, h3, h4, h5, h6 {
+    color: rgb(var(--text-primary));
+  }
+}
+
+/* =========================================
+   SCROLLBAR
+   ========================================= */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(249, 115, 22, 0.5);
+}
+
+/* =========================================
+   GLASSMORPHISM COMPONENTS
+   ========================================= */
+
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glass-card {
+  background: var(--glass-card-bg);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-card-shadow);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-card:hover {
+  border-color: rgba(2, 132, 199, 0.3);
+  box-shadow:
+    var(--glass-card-shadow),
+    0 0 30px 0 rgba(2, 132, 199, 0.06);
+  transform: translateY(-2px);
+}
+
+/* =========================================
+   ZOOM IMAGE HELPER
+   ========================================= */
+
+.zoom-img-container {
+  overflow: hidden;
+  position: relative;
+}
+
+.zoom-img-container img {
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.zoom-img-container:hover img {
+  transform: scale(1.06);
+}
+
+/* =========================================
+   INPUTS
+   ========================================= */
+
+.glass-input {
+  background: rgb(var(--bg-surface));
+  border: 1px solid rgb(var(--border-color));
+  color: rgb(var(--text-primary));
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-input:focus {
+  border-color: #0ea5e9;
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+  outline: none;
+}
+
+.dark .glass-input:focus {
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.25);
+}
+
+.glass-input::placeholder {
+  color: rgb(var(--text-muted));
+}
+
+/* =========================================
+   TYPOGRAPHY UTILITIES
+   ========================================= */
+
+.gradient-text {
+  @apply bg-gradient-to-r from-ocean-400 via-emerald-300 to-gold-400 bg-clip-text text-transparent;
+}
+
+.gradient-text-travel {
+  @apply bg-gradient-to-r from-ocean-400 via-sunset-400 to-gold-300 bg-clip-text text-transparent;
+}
+
+/* Adaptive text helpers */
+.text-adaptive-primary {
+  color: rgb(var(--text-primary));
+}
+
+.text-adaptive-secondary {
+  color: rgb(var(--text-secondary));
+}
+
+.text-adaptive-muted {
+  color: rgb(var(--text-muted));
+}
+
+/* =========================================
+   GLOBAL LIGHT MODE TEXT OVERRIDES
+   Make text-white/text-slate-* classes adapt in light mode
+   ========================================= */
+
+/* In light mode, white/light text classes become dark */
+:root .text-white,
+:root h1.text-white,
+:root h2.text-white,
+:root h3.text-white,
+:root p.text-white {
+  color: rgb(var(--text-primary)) !important;
+}
+
+:root .text-slate-100,
+:root .text-slate-200,
+:root .text-slate-300,
+:root .text-slate-350 {
+  color: rgb(var(--text-secondary)) !important;
+}
+
+:root .text-slate-400,
+:root .text-slate-450,
+:root .text-slate-500 {
+  color: rgb(var(--text-muted)) !important;
+}
+
+:root .border-white\/5,
+:root .border-white\/10 {
+  border-color: rgb(var(--border-color)) !important;
+}
+
+/* In dark mode, restore white text */
+.dark .text-white,
+.dark h1.text-white,
+.dark h2.text-white,
+.dark h3.text-white,
+.dark p.text-white {
+  color: #ffffff !important;
+}
+
+.dark .text-slate-100 { color: #f1f5f9 !important; }
+.dark .text-slate-200 { color: #e2e8f0 !important; }
+.dark .text-slate-300 { color: #cbd5e1 !important; }
+.dark .text-slate-400 { color: #94a3b8 !important; }
+.dark .text-slate-500 { color: #64748b !important; }
+
+/* Hero image overlay text always stays white for readability */
+.hero-overlay-text,
+.hero-overlay-text * {
+  color: #ffffff !important;
+}
+
+/* Light mode: image card overlay text stays white (on dark gradient overlay) */
+:root .card-img-text {
+  color: #ffffff !important;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Buttons on colored backgrounds always white */
+.btn-accent,
+.btn-primary,
+.btn-primary *,
+.btn-accent * {
+  /* text stays white — already set via Tailwind */
+}
+
+/* Section headers with explicit adaptive color */
+.section-title {
+  color: rgb(var(--text-primary));
+}
+
+/* Borders theme-adaptive */
+:root .border-white\/5 { border-color: rgb(var(--border-color)) !important; }
+:root .border-white\/10 { border-color: rgba(var(--border-color), 1.5) !important; }
+.dark .border-white\/5 { border-color: rgba(255,255,255,0.05) !important; }
+.dark .border-white\/10 { border-color: rgba(255,255,255,0.1) !important; }
+
+/* Background overrides for light mode */
+:root .bg-slate-900,
+:root .bg-slate-900\/40,
+:root .bg-slate-900\/50,
+:root .bg-slate-900\/60 {
+  background-color: rgb(var(--bg-muted)) !important;
+}
+
+:root .bg-slate-950,
+:root .bg-slate-950\/40,
+:root .bg-slate-950\/80,
+:root .bg-slate-950\/90 {
+  background-color: rgb(var(--bg-primary)) !important;
+}
+
+
+/* =========================================
+   BUTTONS
+   ========================================= */
+
+.btn-primary {
+  @apply relative overflow-hidden bg-gradient-to-r from-ocean-500 to-emerald-600 hover:from-ocean-400 hover:to-emerald-500 text-white font-medium px-6 py-2.5 rounded-xl transition-all duration-300 shadow-lg shadow-ocean-950/30 hover:shadow-ocean-900/40 hover:-translate-y-0.5 active:translate-y-0 active:scale-95 disabled:opacity-50 disabled:pointer-events-none;
+}
+
+.btn-secondary {
+  background: rgb(var(--bg-surface));
+  border: 1px solid rgb(var(--border-color));
+  color: rgb(var(--text-secondary));
+  @apply font-medium px-6 py-2.5 rounded-xl transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0 active:scale-95 disabled:opacity-50 disabled:pointer-events-none backdrop-blur-sm;
+}
+
+.btn-secondary:hover {
+  background: rgb(var(--bg-muted));
+  border-color: rgba(var(--border-color), 0.8);
+}
+
+.btn-accent {
+  @apply relative overflow-hidden bg-gradient-to-r from-sunset-500 to-gold-600 hover:from-sunset-400 hover:to-gold-500 text-white font-semibold px-6 py-2.5 rounded-xl transition-all duration-300 shadow-lg shadow-sunset-900/30 hover:shadow-sunset-900/40 hover:-translate-y-0.5 active:translate-y-0 active:scale-95 disabled:opacity-50;
+}
+
+/* =========================================
+   LAYOUT HELPERS
+   ========================================= */
+
+.surface-primary {
+  background-color: rgb(var(--bg-primary));
+}
+
+.surface-secondary {
+  background-color: rgb(var(--bg-surface));
+}
+
+.surface-muted {
+  background-color: rgb(var(--bg-muted));
+}
+
+.border-theme {
+  border-color: rgb(var(--border-color));
+}
+
+/* =========================================
+   CARD OVERLAY GRADIENTS — THEME AWARE
+   ========================================= */
+
+.card-image-overlay {
+  background: linear-gradient(
+    to top,
+    rgb(var(--bg-primary)) 0%,
+    transparent 60%
+  );
+}
+
+/* =========================================
+   SECTION DIVIDERS
+   ========================================= */
+
+.section-divider {
+  border-color: rgb(var(--border-color));
+  opacity: 0.6;
+}
