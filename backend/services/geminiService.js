@@ -20,10 +20,10 @@ const sanitizeJsonString = (text) => {
 
 // Models to try in order (fallback chain)
 const MODEL_FALLBACK_LIST = [
-  'gemini-1.5-flash',
-  'gemini-1.5-flash-latest',
   'gemini-2.0-flash',
-  'gemini-1.5-pro',
+  'gemini-2.0-flash-exp',
+  'gemini-1.5-flash-latest',
+  'gemini-1.5-pro-latest',
 ];
 
 // Sleep helper
@@ -68,9 +68,10 @@ const generateWithFallback = async (promptFn) => {
           }
         }
         
-        if (msg.includes('429') || msg.includes('quota') || msg.includes('RESOURCE_EXHAUSTED')) {
-          // Quota exhausted on this model — break to try next
-          console.warn(`[Gemini] ${modelName} quota exhausted, trying next model...`);
+        if (msg.includes('429') || msg.includes('quota') || msg.includes('RESOURCE_EXHAUSTED') ||
+            msg.includes('404') || msg.includes('not found') || msg.includes('not supported')) {
+          // Quota exhausted or model not available — try next model
+          console.warn(`[Gemini] ${modelName} unavailable (${msg.slice(0, 80)}), trying next model...`);
           break;
         }
         
