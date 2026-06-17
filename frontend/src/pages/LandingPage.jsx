@@ -43,27 +43,27 @@ const LandingPage = () => {
       {/* Top Navbar */}
       <header className="glass sticky top-0 z-50 backdrop-blur-md" style={{ borderBottom: '1px solid rgb(var(--border-color))' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-          <div className="flex items-center space-x-2.5">
-            <div className="p-2.5 rounded-xl bg-gradient-to-tr from-ocean-500 to-emerald-500 shadow-md shadow-ocean-950/20">
-              <Compass className="w-6 h-6 text-white" />
+          <div className="flex items-center space-x-2 sm:space-x-2.5">
+            <div className="p-2 sm:p-2.5 rounded-xl bg-gradient-to-tr from-ocean-500 to-emerald-500 shadow-md shadow-ocean-950/20">
+              <Compass className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
             </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-ocean-600 via-emerald-600 to-gold-600 dark:from-ocean-400 dark:via-emerald-400 dark:to-gold-400 bg-clip-text text-transparent">
+            <span className="text-lg sm:text-xl font-bold bg-gradient-to-r from-ocean-600 via-emerald-600 to-gold-600 dark:from-ocean-400 dark:via-emerald-400 dark:to-gold-400 bg-clip-text text-transparent">
               TripNest
             </span>
           </div>
 
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2.5 sm:space-x-4">
             {isAuthenticated ? (
-              <Link to="/dashboard" className="btn-primary flex items-center space-x-1.5 py-2">
+              <Link to="/dashboard" className="btn-primary flex items-center space-x-1 sm:space-x-1.5 py-1.5 px-3 sm:py-2 sm:px-5 text-xs sm:text-sm">
                 <span>{t('nav.goToDashboard')}</span>
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </Link>
             ) : (
               <>
-                <Link to="/login" className="font-semibold text-sm transition-colors" style={{ color: 'rgb(var(--text-secondary))' }}>
+                <Link to="/login" className="font-semibold text-xs sm:text-sm transition-colors" style={{ color: 'rgb(var(--text-secondary))' }}>
                   {t('nav.signIn')}
                 </Link>
-                <Link to="/register" className="btn-accent py-2 px-5 text-sm shadow-sunset-900/10">
+                <Link to="/register" className="btn-accent py-1.5 px-3 sm:py-2 sm:px-5 text-xs sm:text-sm shadow-sunset-900/10">
                   {t('nav.getStarted')}
                 </Link>
               </>
@@ -118,15 +118,15 @@ const LandingPage = () => {
               </motion.p>
 
               {/* Action Buttons */}
-              <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row items-center gap-4 pt-4">
+              <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row items-center gap-4 pt-4 w-full">
                 {isAuthenticated ? (
-                  <Link to="/dashboard" className="btn-accent py-3.5 px-8 text-base flex items-center space-x-2">
+                  <Link to="/dashboard" className="w-full sm:w-auto btn-accent py-3.5 px-8 text-base flex items-center justify-center space-x-2">
                     <span>{t('landing.startPlanning')}</span>
                     <ArrowRight className="w-5 h-5" />
                   </Link>
                 ) : (
                   <>
-                    <Link to="/register" className="btn-accent py-3.5 px-8 text-base flex items-center space-x-2 shadow-sunset-900/20">
+                    <Link to="/register" className="w-full sm:w-auto btn-accent py-3.5 px-8 text-base flex items-center justify-center space-x-2 shadow-sunset-900/20">
                       <span>{t('landing.startPlanning')}</span>
                       <ArrowRight className="w-5 h-5" />
                     </Link>
@@ -137,7 +137,7 @@ const LandingPage = () => {
                           document.getElementById('popular-destinations')?.scrollIntoView({ behavior: 'smooth' });
                         }, 100);
                       }}
-                      className="btn-secondary py-3.5 px-8 text-base"
+                      className="w-full sm:w-auto btn-secondary py-3.5 px-8 text-base flex items-center justify-center"
                     >
                       {t('landing.exploreDestinations')}
                     </button>

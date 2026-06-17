@@ -202,7 +202,7 @@ const DashboardPage = () => {
             {t('dashboard.heroSubtitle')}
           </p>
 
-          <div className="flex flex-wrap gap-4 pt-2">
+          <div className="flex flex-col sm:flex-row gap-4 pt-2 w-full">
             <button
               onClick={() => {
                 setShowUploadPanel(true);
@@ -210,7 +210,7 @@ const DashboardPage = () => {
                   document.getElementById('upload-area')?.scrollIntoView({ behavior: 'smooth' });
                 }, 100);
               }}
-              className="btn-accent py-3 px-8 text-sm font-semibold flex items-center space-x-2"
+              className="w-full sm:w-auto btn-accent py-3 px-8 text-sm font-semibold flex items-center justify-center space-x-2"
             >
               <span>{t('dashboard.startPlanning')}</span>
               <ArrowRight className="w-4 h-4" />
@@ -218,7 +218,7 @@ const DashboardPage = () => {
             
             <button
               onClick={() => document.getElementById('popular-destinations')?.scrollIntoView({ behavior: 'smooth' })}
-              className="py-3 px-8 text-sm font-semibold rounded-xl transition-all duration-200"
+              className="w-full sm:w-auto py-3 px-8 text-sm font-semibold rounded-xl transition-all duration-200 flex items-center justify-center"
               style={{ backgroundColor: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.25)', color: '#ffffff' }}
             >
               {t('dashboard.exploreDestinations')}
