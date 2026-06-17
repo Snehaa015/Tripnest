@@ -15,6 +15,9 @@ connectDB();
 
 const app = express();
 
+// Trust proxy header when running behind reverse proxies (like Vercel)
+app.set('trust proxy', 1);
+
 // Security Middlewares
 app.use(helmet({
   crossOriginResourcePolicy: false // Allows files or images to be requested across domains if needed
