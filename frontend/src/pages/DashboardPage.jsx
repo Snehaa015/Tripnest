@@ -191,10 +191,6 @@ const DashboardPage = () => {
         </div>
 
         <div className="relative z-10 max-w-2xl space-y-5 hero-overlay-text">
-          <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-sunset-500/20 border border-sunset-500/30 text-sunset-300 text-xs font-bold uppercase tracking-wider">
-            <Compass className="w-3.5 h-3.5" />
-            <span>{t('dashboard.aiAssistant')}</span>
-          </span>
           <h1 className="text-3xl sm:text-5xl font-extrabold leading-tight" style={{ color: '#ffffff', textShadow: '0 2px 8px rgba(0,0,0,0.4)' }}>
             {t('dashboard.heroTitle')}
           </h1>
