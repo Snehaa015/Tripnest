@@ -2,8 +2,11 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
-// Ensure uploads directory exists
-const uploadDir = path.join(__dirname, '../uploads');
+const os = require('os');
+
+// Ensure uploads directory exists. On Vercel/production, use the writeable OS temp directory
+const isVercel = process.env.VERCEL === '1' || process.env.NODE_ENV === 'production';
+const uploadDir = isVercel ? os.tmpdir() : path.join(__dirname, '../uploads');
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
